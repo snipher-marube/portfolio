@@ -4,6 +4,7 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 from django.db.models import Count, Avg
+from ckeditor.widgets import CKEditorWidget
 from .models import (
     Category, Technology, Project, BlogPost, Tag, 
     CoffeePurchase, SiteSettings, TimeStampedModel
@@ -263,6 +264,12 @@ class BlogPostAdmin(TimeStampedAdmin):
         })
     )
 
+     # This ensures CKEditor is used in admin
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'content':
+            kwargs['widget'] = CKEditorWidget(config_name='default')
+        return super().formfield_for_dbfield(db_field, **kwargs)
+    
     def published_badge(self, obj):
         if obj.is_published:
             return format_html(

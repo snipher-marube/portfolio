@@ -6,6 +6,8 @@ from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
+from ckeditor.fields import RichTextField
+from ckeditor_uploader.fields import RichTextUploadingField
 
 class TimeStampedModel(models.Model):
     """Abstract base model for created/updated timestamps"""
@@ -252,7 +254,7 @@ class BlogPost(TimeStampedModel):
         unique=True,
         help_text=_("URL-friendly version of the title")
     )
-    content = models.TextField(
+    content = RichTextUploadingField(
         help_text=_("Main content of the blog post")
     )
     excerpt = models.TextField(
