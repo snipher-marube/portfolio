@@ -1,0 +1,683 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Buy Me a Coffee - Support My Work | {{ site_settings.site_name }}{% endblock %}
+
+{% block meta_description %}Support my work by buying me a coffee. Your contribution helps me continue creating amazing content and open-source projects.{% endblock %}
+
+{% block extra_css %}
+<style>
+    .coffee-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: linear-gradient(135deg, #fff 0%, #fefce8 100%);
+    }
+    
+    .coffee-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(139, 69, 19, 0.25);
+    }
+    
+    .coffee-option {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .coffee-option.selected {
+        border-color: #d97706;
+        background: linear-gradient(135deg, #fef3c7 0%, #fefce8 100%);
+        transform: scale(1.02);
+    }
+    
+    .coffee-option:hover:not(.selected) {
+        border-color: #fbbf24;
+        background: #fffbeb;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, #f59e0b, #d97706);
+        box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
+    }
+    
+    .supporter-avatar {
+        transition: transform 0.3s ease;
+    }
+    
+    .supporter-avatar:hover {
+        transform: scale(1.1);
+    }
+    
+    .payment-method {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+    }
+    
+    .payment-method.selected {
+        border-color: #10b981;
+        background: #ecfdf5;
+    }
+    
+    .floating-coffee {
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+    
+    .coffee-steam {
+        animation: steam 4s ease-in-out infinite;
+    }
+    
+    @keyframes steam {
+        0%, 100% { opacity: 0; transform: translateY(0) scale(1); }
+        50% { opacity: 0.6; transform: translateY(-10px) scale(1.1); }
+    }
+    
+    @media (prefers-reduced-motion: reduce) {
+        .coffee-card,
+        .coffee-option,
+        .supporter-avatar,
+        .floating-coffee,
+        .coffee-steam {
+            animation: none;
+            transition: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative py-20 bg-gradient-to-br from-amber-900 via-orange-900 to-amber-800 overflow-hidden">
+    <!-- Animated Background Elements -->
+    <div class="absolute inset-0" aria-hidden="true">
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-amber-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: -2s;"></div>
+        <div class="absolute top-1/2 left-1/2 w-96 h-96 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-10 animate-float" style="animation-delay: -4s;"></div>
+    </div>
+
+    <div class="relative container mx-auto px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <!-- Animated Coffee Cup -->
+            <div class="relative inline-block mb-8 floating-coffee">
+                <div class="relative">
+                    <div class="w-32 h-40 bg-amber-100 rounded-b-3xl rounded-t-lg border-4 border-amber-300 mx-auto">
+                        <div class="w-24 h-32 bg-amber-50 rounded-b-2xl rounded-t-md mx-auto mt-2 border-2 border-amber-200"></div>
+                    </div>
+                    <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 w-16 h-8 bg-amber-300 rounded-full border-2 border-amber-400"></div>
+                    <!-- Steam -->
+                    <div class="absolute -top-12 left-1/2 transform -translate-x-1/2">
+                        <div class="coffee-steam w-4 h-12 bg-white/30 rounded-full mx-auto"></div>
+                    </div>
+                </div>
+            </div>
+
+            <span class="inline-block px-6 py-3 bg-amber-500/20 text-amber-300 rounded-2xl text-sm font-semibold mb-6 border border-amber-500/30">
+                <i class="fas fa-heart mr-2" aria-hidden="true"></i>Support My Work
+            </span>
+            
+            <h1 class="text-5xl md:text-7xl font-bold text-white mb-6">
+                Buy Me a
+                <span class="bg-gradient-to-r from-amber-300 to-orange-300 bg-clip-text text-transparent">Coffee</span>
+            </h1>
+            
+            <p class="text-xl md:text-2xl text-amber-100 mb-8 leading-relaxed max-w-3xl mx-auto">
+                Fuel my creativity and help me continue building amazing projects, 
+                writing technical content, and contributing to open-source.
+            </p>
+            
+            <!-- Support Stats -->
+            <div class="flex flex-wrap justify-center gap-8 mt-12" role="list" aria-label="Support statistics">
+                <div class="text-center" role="listitem">
+                    <div class="text-3xl font-bold text-white">{{ recent_supporters|length }}+</div>
+                    <div class="text-amber-200 text-sm">Recent Supporters</div>
+                </div>
+                <div class="text-center" role="listitem">
+                    <div class="text-3xl font-bold text-white">
+                        {% with total_coffees=0 %}
+                        {% for supporter in recent_supporters %}
+                            {% widthratio supporter.amount 3 1 as coffees %}
+                            {% with total_coffees=total_coffees|add:coffees %}
+                            {% endwith %}
+                        {% endfor %}
+                        {{ total_coffees }}+
+                        {% endwith %}
+                    </div>
+                    <div class="text-amber-200 text-sm">Coffees Received</div>
+                </div>
+                <div class="text-center" role="listitem">
+                    <div class="text-3xl font-bold text-white">∞</div>
+                    <div class="text-amber-200 text-sm">Gratitude</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Coffee Purchase Section -->
+<section class="py-16 bg-gradient-to-br from-amber-50 to-orange-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                <!-- Coffee Options -->
+                <div class="space-y-8">
+                    <!-- Quick Options -->
+                    <div class="coffee-card rounded-3xl shadow-xl border border-amber-200 p-8">
+                        <div class="text-center mb-8">
+                            <h2 class="text-3xl font-bold text-gray-900 mb-4">Choose Your Support</h2>
+                            <p class="text-gray-600">
+                                Select a pre-set amount or enter a custom value. Every contribution makes a difference!
+                            </p>
+                        </div>
+
+                        <!-- Pre-set Amounts -->
+                        <div class="space-y-4 mb-8">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-bolt text-amber-600" aria-hidden="true"></i>
+                                Quick Options
+                            </h3>
+                            
+                            <div class="grid grid-cols-2 gap-4">
+                                {% with coffee_options="3,5,10,20" %}
+                                {% for amount in coffee_options.split %}
+                                <button class="coffee-option bg-white border border-amber-200 rounded-2xl p-6 text-center transition-all duration-300 group"
+                                        data-amount="{{ amount }}"
+                                        onclick="selectCoffeeOption(this, {{ amount }})"
+                                        aria-label="Select {{ amount }} dollar option">
+                                    <div class="text-3xl mb-2">
+                                        {% if amount == "3" %}☕{% endif %}
+                                        {% if amount == "5" %}☕☕{% endif %}
+                                        {% if amount == "10" %}☕☕☕{% endif %}
+                                        {% if amount == "20" %}🎉{% endif %}
+                                    </div>
+                                    <div class="font-semibold text-gray-900 mb-1">
+                                        {% if amount == "3" %}Small Boost{% endif %}
+                                        {% if amount == "5" %}Coffee & Snack{% endif %}
+                                        {% if amount == "10" %}Generous Support{% endif %}
+                                        {% if amount == "20" %}Amazing Sponsor{% endif %}
+                                    </div>
+                                    <div class="text-2xl font-bold text-amber-600">${{ amount }}</div>
+                                    <div class="text-xs text-gray-500 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        {{ amount }} coffees
+                                    </div>
+                                </button>
+                                {% endfor %}
+                                {% endwith %}
+                            </div>
+                        </div>
+
+                        <!-- Custom Amount -->
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fas fa-edit text-amber-600" aria-hidden="true"></i>
+                                Custom Amount
+                            </h3>
+                            
+                            <div class="relative">
+                                <label for="custom-amount" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Enter custom amount (USD)
+                                </label>
+                                <div class="relative">
+                                    <span class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500 font-semibold">$</span>
+                                    <input type="number" 
+                                           id="custom-amount"
+                                           name="amount"
+                                           min="1"
+                                           max="1000"
+                                           step="0.01"
+                                           placeholder="0.00"
+                                           class="w-full border border-gray-300 rounded-2xl px-12 py-4 text-lg font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+                                           oninput="updateCustomAmount(this.value)"
+                                           aria-describedby="amount-help">
+                                </div>
+                                <div id="amount-help" class="text-sm text-gray-500 mt-2">
+                                    Minimum amount: $1.00
+                                </div>
+                            </div>
+
+                            <!-- Coffee Calculation -->
+                            <div id="coffee-calculation" class="bg-amber-50 rounded-2xl p-4 border border-amber-200 hidden">
+                                <div class="flex items-center justify-between text-sm">
+                                    <span class="text-gray-700">This equals approximately:</span>
+                                    <span id="coffee-count" class="font-semibold text-amber-700"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Methods -->
+                    <div class="coffee-card rounded-3xl shadow-xl border border-amber-200 p-8">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                            <i class="fas fa-credit-card text-amber-600" aria-hidden="true"></i>
+                            Payment Method
+                        </h3>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <button class="payment-method bg-white border border-gray-300 rounded-2xl p-4 text-center transition-all duration-300"
+                                    onclick="selectPaymentMethod(this, 'mpesa')"
+                                    aria-label="Select M-Pesa payment method">
+                                <i class="fas fa-mobile-alt text-3xl text-green-600 mb-2" aria-hidden="true"></i>
+                                <div class="font-semibold text-gray-900">M-Pesa</div>
+                                <div class="text-xs text-gray-500">Kenya</div>
+                            </button>
+                            
+                            <button class="payment-method bg-white border border-gray-300 rounded-2xl p-4 text-center transition-all duration-300"
+                                    onclick="selectPaymentMethod(this, 'paypal')"
+                                    aria-label="Select PayPal payment method">
+                                <i class="fab fa-paypal text-3xl text-blue-600 mb-2" aria-hidden="true"></i>
+                                <div class="font-semibold text-gray-900">PayPal</div>
+                                <div class="text-xs text-gray-500">International</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Summary & Form -->
+                <div class="space-y-8">
+                    <!-- Order Summary -->
+                    <div class="coffee-card rounded-3xl shadow-xl border border-amber-200 p-8 sticky top-8">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Order Summary</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Amount:</span>
+                                <span id="summary-amount" class="text-2xl font-bold text-amber-600">$0.00</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Coffees:</span>
+                                <span id="summary-coffees" class="font-semibold text-gray-900">0</span>
+                            </div>
+                            
+                            <div class="flex justify-between items-center py-3 border-b border-gray-200">
+                                <span class="text-gray-600">Payment Method:</span>
+                                <span id="summary-method" class="font-semibold text-gray-900">-</span>
+                            </div>
+                        </div>
+
+                        <!-- Support Message -->
+                        <div class="mb-6">
+                            <label for="support-message" class="block text-sm font-medium text-gray-700 mb-2">
+                                Optional Message (will be public)
+                            </label>
+                            <textarea id="support-message" 
+                                      name="message"
+                                      rows="3"
+                                      placeholder="Leave an encouraging message..."
+                                      class="w-full border border-gray-300 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300 resize-none"
+                                      aria-describedby="message-help"></textarea>
+                            <div id="message-help" class="text-sm text-gray-500 mt-2">
+                                This message will be displayed publicly on the supporters page
+                            </div>
+                        </div>
+
+                        <!-- Personal Info -->
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label for="supporter-name" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Your Name (optional)
+                                </label>
+                                <input type="text" 
+                                       id="supporter-name"
+                                       name="name"
+                                       placeholder="Anonymous"
+                                       class="w-full border border-gray-300 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300">
+                            </div>
+                            <div>
+                                <label for="supporter-email" class="block text-sm font-medium text-gray-700 mb-2">
+                                    Email (optional)
+                                </label>
+                                <input type="email" 
+                                       id="supporter-email"
+                                       name="email"
+                                       placeholder="your@email.com"
+                                       class="w-full border border-gray-300 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300">
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <form method="post" id="coffee-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="amount" id="form-amount" value="">
+                            <input type="hidden" name="payment_method" id="form-payment-method" value="">
+                            
+                            <button type="submit" 
+                                    id="submit-btn"
+                                    disabled
+                                    class="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white py-4 px-6 rounded-2xl font-semibold transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 shadow-lg hover:shadow-xl">
+                                <i class="fas fa-mug-hot" aria-hidden="true"></i>
+                                <span id="submit-text">Support with $0.00</span>
+                                <i class="fas fa-lock ml-2" aria-hidden="true"></i>
+                            </button>
+                        </form>
+
+                        <p class="text-center text-sm text-gray-500 mt-4">
+                            <i class="fas fa-shield-alt mr-1" aria-hidden="true"></i>
+                            Secure payment processed safely
+                        </p>
+                    </div>
+
+                    <!-- Recent Supporters -->
+                    {% if recent_supporters %}
+                    <div class="coffee-card rounded-3xl shadow-xl border border-amber-200 p-6">
+                        <h3 class="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
+                            <i class="fas fa-users text-amber-600" aria-hidden="true"></i>
+                            Recent Supporters
+                        </h3>
+                        <div class="space-y-3">
+                            {% for supporter in recent_supporters|slice:":5" %}
+                            <div class="flex items-center justify-between py-2 border-b border-amber-100 last:border-b-0">
+                                <div class="flex items-center space-x-3">
+                                    <div class="supporter-avatar w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-full flex items-center justify-center shadow-sm">
+                                        <span class="text-white text-xs font-semibold">
+                                            {{ supporter.display_name|slice:":1"|upper }}
+                                        </span>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-gray-900 text-sm">{{ supporter.display_name }}</div>
+                                        {% if supporter.message %}
+                                        <div class="text-xs text-gray-500 italic">"{{ supporter.message|truncatewords:8 }}"</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="text-amber-600 font-semibold text-sm">${{ supporter.amount }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Impact Section -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
+                Your Support Makes a Difference
+            </h2>
+            <p class="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+                Every coffee helps me continue creating valuable content, maintaining open-source projects, 
+                and sharing knowledge with the developer community.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-code text-2xl text-blue-600" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Open Source</h3>
+                    <p class="text-gray-600 text-sm">
+                        Maintain and improve free, open-source projects for the community
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-pencil-alt text-2xl text-green-600" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Content Creation</h3>
+                    <p class="text-gray-600 text-sm">
+                        Write tutorials, articles, and guides to help other developers
+                    </p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-tools text-2xl text-purple-600" aria-hidden="true"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Tool Development</h3>
+                    <p class="text-gray-600 text-sm">
+                        Build useful tools and utilities for the developer ecosystem
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center">Frequently Asked Questions</h2>
+            
+            <div class="space-y-6">
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">How does the payment work?</h3>
+                    <p class="text-gray-600">
+                        You can pay via M-Pesa (for Kenyan supporters) or PayPal (international). 
+                        The process is secure and handled through trusted payment providers.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Is my payment information safe?</h3>
+                    <p class="text-gray-600">
+                        Yes! We don't store any payment information on our servers. All payments are processed 
+                        through secure payment gateways (M-Pesa/PayPal) with industry-standard encryption.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Can I remain anonymous?</h3>
+                    <p class="text-gray-600">
+                        Absolutely! You can choose to appear as "Anonymous Supporter" or provide a custom name. 
+                        Your email is always kept private unless you choose to share it.
+                    </p>
+                </div>
+                
+                <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">What will my support be used for?</h3>
+                    <p class="text-gray-600">
+                        Your support helps cover server costs, development tools, and allows me to spend more time 
+                        creating free content and open-source projects for the community.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    let selectedAmount = 0;
+    let selectedPaymentMethod = null;
+    const coffeePrice = 3; // $3 per coffee
+
+    // Select coffee option
+    function selectCoffeeOption(element, amount) {
+        // Remove selected class from all options
+        document.querySelectorAll('.coffee-option').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked option
+        element.classList.add('selected');
+        
+        // Update amount
+        selectedAmount = amount;
+        updateOrderSummary();
+        updateCustomAmountInput(amount);
+    }
+
+    // Update custom amount input
+    function updateCustomAmountInput(amount) {
+        const customAmountInput = document.getElementById('custom-amount');
+        if (customAmountInput) {
+            customAmountInput.value = amount;
+        }
+        updateCoffeeCalculation(amount);
+    }
+
+    // Handle custom amount input
+    function updateCustomAmount(value) {
+        const amount = parseFloat(value) || 0;
+        
+        // Remove selection from pre-set options
+        document.querySelectorAll('.coffee-option').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        selectedAmount = amount;
+        updateOrderSummary();
+        updateCoffeeCalculation(amount);
+    }
+
+    // Update coffee calculation display
+    function updateCoffeeCalculation(amount) {
+        const calculationDiv = document.getElementById('coffee-calculation');
+        const coffeeCountSpan = document.getElementById('coffee-count');
+        
+        if (amount >= 1) {
+            const coffeeCount = Math.floor(amount / coffeePrice);
+            coffeeCountSpan.textContent = `${coffeeCount} coffee${coffeeCount !== 1 ? 's' : ''}`;
+            calculationDiv.classList.remove('hidden');
+        } else {
+            calculationDiv.classList.add('hidden');
+        }
+    }
+
+    // Select payment method
+    function selectPaymentMethod(element, method) {
+        // Remove selected class from all methods
+        document.querySelectorAll('.payment-method').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked method
+        element.classList.add('selected');
+        
+        // Update payment method
+        selectedPaymentMethod = method;
+        updateOrderSummary();
+    }
+
+    // Update order summary
+    function updateOrderSummary() {
+        const summaryAmount = document.getElementById('summary-amount');
+        const summaryCoffees = document.getElementById('summary-coffees');
+        const summaryMethod = document.getElementById('summary-method');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitText = document.getElementById('submit-text');
+        const formAmount = document.getElementById('form-amount');
+        const formPaymentMethod = document.getElementById('form-payment-method');
+
+        // Update amount
+        if (selectedAmount > 0) {
+            summaryAmount.textContent = `$${selectedAmount.toFixed(2)}`;
+            submitText.textContent = `Support with $${selectedAmount.toFixed(2)}`;
+            formAmount.value = selectedAmount;
+        } else {
+            summaryAmount.textContent = '$0.00';
+            submitText.textContent = 'Support with $0.00';
+            formAmount.value = '';
+        }
+
+        // Update coffee count
+        const coffeeCount = selectedAmount >= 1 ? Math.floor(selectedAmount / coffeePrice) : 0;
+        summaryCoffees.textContent = coffeeCount;
+
+        // Update payment method
+        if (selectedPaymentMethod) {
+            const methodText = selectedPaymentMethod === 'mpesa' ? 'M-Pesa' : 'PayPal';
+            summaryMethod.textContent = methodText;
+            formPaymentMethod.value = selectedPaymentMethod;
+        } else {
+            summaryMethod.textContent = '-';
+            formPaymentMethod.value = '';
+        }
+
+        // Enable/disable submit button
+        submitBtn.disabled = !(selectedAmount >= 1 && selectedPaymentMethod);
+    }
+
+    // Form submission handling
+    document.getElementById('coffee-form').addEventListener('submit', function(e) {
+        if (!selectedAmount || !selectedPaymentMethod) {
+            e.preventDefault();
+            showNotification('Please select an amount and payment method', 'error');
+            return;
+        }
+
+        if (selectedAmount < 1) {
+            e.preventDefault();
+            showNotification('Minimum amount is $1.00', 'error');
+            return;
+        }
+
+        // Add loading state
+        const submitBtn = document.getElementById('submit-btn');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+        submitBtn.disabled = true;
+
+        // Re-enable after 5 seconds if still on page (fallback)
+        setTimeout(() => {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 5000);
+    });
+
+    // Notification function
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `fixed top-4 right-4 p-4 rounded-2xl shadow-lg z-50 transform transition-transform duration-300 ${
+            type === 'error' ? 'bg-red-500 text-white' : 'bg-blue-500 text-white'
+        }`;
+        notification.textContent = message;
+        
+        document.body.appendChild(notification);
+        
+        // Remove notification after 5 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                document.body.removeChild(notification);
+            }, 300);
+        }, 5000);
+    }
+
+    // Initialize form state
+    document.addEventListener('DOMContentLoaded', function() {
+        updateOrderSummary();
+        
+        // Add input validation
+        const customAmountInput = document.getElementById('custom-amount');
+        if (customAmountInput) {
+            customAmountInput.addEventListener('blur', function() {
+                const value = parseFloat(this.value);
+                if (value < 1) {
+                    this.value = '';
+                    selectedAmount = 0;
+                    updateOrderSummary();
+                }
+            });
+        }
+    });
+
+    // Add structured data for SEO
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "DonateAction",
+        "name": "Buy Me a Coffee",
+        "description": "Support my work by buying me a coffee",
+        "url": "{{ request.build_absolute_uri }}",
+        "agent": {
+            "@type": "Person",
+            "name": "{{ site_settings.site_name }}"
+        },
+        "price": "3.00",
+        "priceCurrency": "USD"
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+</script>
+{% endblock %}

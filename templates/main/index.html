@@ -1,0 +1,837 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Marube Snipher Abel - Full Stack Web Developer{% endblock %}
+
+{% block extra_css %}
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-10px);
+        }
+    }
+    
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out;
+    }
+    
+    .animate-float {
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .gradient-text {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    
+    .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .tech-icon {
+        transition: all 0.3s ease;
+    }
+
+    .tech-icon:hover {
+        transform: scale(1.1);
+    }
+
+    .project-card {
+        transition: all 0.3s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <!-- Animated Background -->
+    <div class="absolute inset-0">
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/20 via-slate-900 to-slate-900"></div>
+        <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float"></div>
+        <div class="absolute top-1/3 right-1/4 w-72 h-72 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style="animation-delay: -2s;"></div>
+        <div class="absolute bottom-1/4 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-float" style="animation-delay: -4s;"></div>
+    </div>
+
+    <div class="relative container mx-auto px-4 z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Text Content -->
+            <div class="text-center lg:text-left animate-fade-in-up">
+                <div class="mb-6">
+                    <span class="inline-block px-4 py-2 bg-blue-500/10 border border-blue-500/20 rounded-full text-blue-300 text-sm font-medium mb-4">
+                        👋 Hello, I'm Marube Snipher Abel
+                    </span>
+                </div>
+                
+                <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight">
+                    Full Stack
+                    <span class="gradient-text block">Web Developer</span>
+                </h1>
+                
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed max-w-2xl">
+                    Crafting digital experiences with <span class="text-blue-400 font-semibold">Python</span>, 
+                    <span class="text-green-400 font-semibold">Django</span>, and modern web technologies. 
+                    Transforming ideas into scalable, performant solutions.
+                </p>
+                
+                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                    <a href="{% url 'project_list' %}" 
+                       class="group relative bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-2xl hover:shadow-blue-500/25 flex items-center justify-center">
+                        <span>View My Work</span>
+                        <i class="fas fa-arrow-down ml-2 group-hover:translate-y-1 transition-transform duration-300"></i>
+                    </a>
+                    
+                    <a href="#contact" 
+                       class="group glass-effect text-white hover:bg-white/10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 border border-white/20 hover:border-white/40 flex items-center justify-center">
+                        <span>Get In Touch</span>
+                        <i class="fas fa-paper-plane ml-2 group-hover:translate-x-1 transition-transform duration-300"></i>
+                    </a>
+                </div>
+
+                <!-- Stats -->
+                <div class="grid grid-cols-3 gap-6 mt-12 max-w-md mx-auto lg:mx-0">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">{{ featured_content.featured_projects|length }}+</div>
+                        <div class="text-sm text-gray-400">Projects</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">3+</div>
+                        <div class="text-sm text-gray-400">Years Exp</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-white mb-1">{{ technologies|length }}+</div>
+                        <div class="text-sm text-gray-400">Tech Stack</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Image -->
+            <div class="relative animate-fade-in-up" style="animation-delay: 0.3s;">
+                <div class="relative mx-auto lg:mx-0 max-w-md">
+                    <!-- Main Image Container -->
+                    <div class="relative bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-2xl p-8 backdrop-blur-sm border border-white/10">
+                        <div class="relative">
+                            <!-- Placeholder for profile image -->
+                            <div class="w-64 h-64 mx-auto bg-gradient-to-br from-blue-400 to-purple-600 rounded-2xl flex items-center justify-center shadow-2xl overflow-hidden">
+                                {% if site_settings.site_image %}
+                                    <img src="{{ site_settings.site_image.url }}" alt="Profile Image" class="w-full h-full object-cover rounded-2xl">
+                                {% else %}
+                                    <div class="text-center text-white">
+                                        <i class="fas fa-user text-6xl mb-2"></i>
+                                        <p class="text-sm">Profile Image</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Floating elements -->
+                            <div class="absolute -top-4 -right-4 w-16 h-16 bg-yellow-500 rounded-2xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-star text-white text-xl"></i>
+                            </div>
+                            <div class="absolute -bottom-4 -left-4 w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center shadow-lg">
+                                <i class="fab fa-python text-white text-lg"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Background decoration -->
+                    <div class="absolute -inset-4 bg-gradient-to-r from-blue-500 to-purple-600 rounded-3xl opacity-20 blur-xl"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <a href="#about" class="text-white/60 hover:text-white transition-colors duration-300">
+            <i class="fas fa-chevron-down text-2xl"></i>
+        </a>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <!-- Image Section -->
+            <div class="relative group">
+                <div class="relative z-10 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 transform group-hover:scale-105 transition-transform duration-500">
+                    <div class="w-full h-80 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <i class="fas fa-laptop-code text-8xl mb-4 opacity-90"></i>
+                            <p class="text-lg font-semibold">Developer at Work</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute -inset-4 bg-gradient-to-r from-blue-200 to-purple-200 rounded-3xl opacity-50 group-hover:opacity-70 blur-xl transition-all duration-500"></div>
+            </div>
+
+            <!-- Content Section -->
+            <div>
+                <span class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+                    About Me
+                </span>
+                
+                <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+                    Crafting Digital
+                    <span class="gradient-text">Excellence</span>
+                </h2>
+                
+                <div class="space-y-4 text-lg text-gray-600 leading-relaxed">
+                    <p>
+                        I'm a passionate <strong class="text-gray-900">Full Stack Developer</strong> with a proven track record 
+                        of delivering impactful digital solutions. With expertise spanning both frontend and backend 
+                        technologies, I specialize in building robust, scalable applications that solve real-world problems.
+                    </p>
+                    
+                    <p>
+                        My journey began with curiosity about how digital experiences are created, evolving into a 
+                        dedication for crafting solutions that are not only functional but also intuitive and engaging.
+                    </p>
+                    
+                    <p>
+                        When I'm not immersed in code, you'll find me exploring emerging technologies, contributing 
+                        to open-source projects, or sharing insights through technical writing and mentorship.
+                    </p>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="grid grid-cols-2 gap-6 mt-8">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-check text-green-600"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900">Clean Code</div>
+                            <div class="text-sm text-gray-500">Best Practices</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bolt text-blue-600"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold text-gray-900">Fast Delivery</div>
+                            <div class="text-sm text-gray-500">Efficient Workflow</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Skills Section -->
+<section id="skills" class="py-20 bg-gradient-to-br from-gray-50 to-blue-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold mb-4">
+                Expertise
+            </span>
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Technical
+                <span class="gradient-text">Skills</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                A comprehensive toolkit for building modern, scalable web applications
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Backend Skills -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fab fa-python text-3xl text-red-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Backend Development</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">Python & Django</span>
+                        <span class="text-blue-600 font-semibold">Expert</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">REST APIs</span>
+                        <span class="text-blue-600 font-semibold">Expert</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">Database Design</span>
+                        <span class="text-blue-600 font-semibold">Advanced</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frontend Skills -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fas fa-code text-3xl text-blue-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">Frontend Development</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">HTML/CSS/JS</span>
+                        <span class="text-blue-600 font-semibold">Expert</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">TailwindCSS</span>
+                        <span class="text-blue-600 font-semibold">Advanced</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">React/Vue</span>
+                        <span class="text-blue-600 font-semibold">Intermediate</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DevOps Skills -->
+            <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
+                <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mb-6">
+                    <i class="fab fa-docker text-3xl text-green-600"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-gray-900 mb-4">DevOps & Tools</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">Docker & CI/CD</span>
+                        <span class="text-blue-600 font-semibold">Advanced</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">Git & GitHub</span>
+                        <span class="text-blue-600 font-semibold">Expert</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">Cloud Deployment</span>
+                        <span class="text-blue-600 font-semibold">Advanced</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Technology Stack -->
+        <div class="mt-16 bg-white rounded-2xl p-8 shadow-lg border border-gray-100">
+            <h3 class="text-2xl font-bold text-center text-gray-900 mb-8">Technology Stack</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
+                {% for tech in technologies %}
+                <div class="text-center group">
+                    <div class="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-50 transition-colors duration-300 tech-icon">
+                        {% if tech.icon %}
+                            <i class="{{ tech.icon }} text-2xl text-gray-600 group-hover:text-blue-600"></i>
+                        {% else %}
+                            <i class="fas fa-code text-2xl text-gray-600 group-hover:text-blue-600"></i>
+                        {% endif %}
+                    </div>
+                    <span class="text-sm font-medium text-gray-700">{{ tech.name }}</span>
+                </div>
+                {% empty %}
+                <div class="col-span-full text-center text-gray-500 py-8">
+                    <i class="fas fa-tools text-4xl mb-4"></i>
+                    <p>Technologies will be displayed here</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Section -->
+<section id="projects" class="py-20 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold mb-4">
+                Portfolio
+            </span>
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Featured
+                <span class="gradient-text">Projects</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                A showcase of my recent work and digital solutions
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {% for project in featured_content.featured_projects %}
+            <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100 overflow-hidden project-card">
+                <div class="relative overflow-hidden">
+                    {% if project.featured_image %}
+                        <img src="{{ project.featured_image.url }}" alt="{{ project.title }}" class="w-full h-48 object-cover">
+                    {% else %}
+                        <div class="h-48 bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
+                            <i class="fas fa-project-diagram text-6xl text-white opacity-90"></i>
+                        </div>
+                    {% endif %}
+                    <div class="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+                </div>
+                
+                <div class="p-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-2xl font-bold text-gray-900">{{ project.title }}</h3>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-medium">
+                            {{ project.get_project_type_display }}
+                        </span>
+                    </div>
+                    
+                    <p class="text-gray-600 mb-6 leading-relaxed">{{ project.short_description }}</p>
+                    
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        {% for tech in project.technologies.all|slice:":4" %}
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                            {{ tech.name }}
+                        </span>
+                        {% endfor %}
+                        {% if project.technologies.count > 4 %}
+                        <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm">
+                            +{{ project.technologies.count|add:"-4" }} more
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        {% if project.project_url %}
+                        <a href="{{ project.project_url }}" 
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            Live Demo
+                        </a>
+                        {% endif %}
+                        
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" 
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 text-center py-3 px-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center">
+                            <i class="fab fa-github mr-2"></i>
+                            Code
+                        </a>
+                        {% endif %}
+
+                        {% if not project.project_url and not project.github_url %}
+                        <a href="{{ project.get_absolute_url }}" 
+                           class="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-center py-3 px-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                            <i class="fas fa-info-circle mr-2"></i>
+                            View Details
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-500 mb-2">No Featured Projects Yet</h3>
+                <p class="text-gray-500">Check back soon for updates!</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{% url 'project_list' %}" class="inline-flex items-center px-8 py-4 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
+                <span>View All Projects</span>
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Blog Section -->
+<section id="blog" class="py-20 bg-gradient-to-br from-slate-50 to-indigo-50">
+    <div class="container mx-auto px-4">
+        <div class="text-center mb-16">
+            <span class="inline-block px-4 py-2 bg-indigo-100 text-indigo-700 rounded-full text-sm font-semibold mb-4">
+                Insights
+            </span>
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                Latest
+                <span class="gradient-text">Articles</span>
+            </h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Thoughts, tutorials, and insights from my development journey
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in featured_content.recent_posts %}
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden project-card">
+                {% if post.featured_image %}
+                    <img src="{{ post.featured_image.url }}" alt="{{ post.image_alt|default:post.title }}" class="w-full h-48 object-cover">
+                {% else %}
+                    <div class="h-48 bg-gradient-to-br from-indigo-400 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-newspaper text-6xl text-white opacity-90"></i>
+                    </div>
+                {% endif %}
+                
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
+                            {{ post.get_post_type_display }}
+                        </span>
+                        <span class="text-sm text-gray-500">
+                            <i class="far fa-clock mr-1"></i>{{ post.reading_time }} min read
+                        </span>
+                    </div>
+                    
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">{{ post.title }}</h3>
+                    
+                    <p class="text-gray-600 mb-4 line-clamp-3">{{ post.excerpt }}</p>
+                    
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-gray-600 text-sm"></i>
+                            </div>
+                            <span class="text-sm text-gray-600">{{ post.author.get_full_name|default:post.author.username }}</span>
+                        </div>
+                        
+                        <a href="{{ post.get_absolute_url }}" class="text-indigo-600 hover:text-indigo-700 font-semibold text-sm flex items-center">
+                            Read More
+                            <i class="fas fa-arrow-right ml-1 text-xs"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <i class="fas fa-newspaper text-6xl text-gray-300 mb-4"></i>
+                <h3 class="text-2xl font-bold text-gray-500 mb-2">No Articles Yet</h3>
+                <p class="text-gray-500">Blog posts coming soon!</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        {% if featured_content.recent_posts %}
+        <div class="text-center mt-12">
+            <a href="{% url 'blog_list' %}" class="inline-flex items-center px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
+                <span>View All Articles</span>
+                <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Coffee Section -->
+<section class="py-20 bg-gradient-to-br from-amber-50 to-orange-50">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <!-- Visual Section -->
+                    <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-12 flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <i class="fas fa-mug-hot text-8xl mb-6 opacity-90"></i>
+                            <h3 class="text-3xl font-bold mb-4">Fuel the Creativity</h3>
+                            <p class="text-amber-100 text-lg">Every coffee helps create more amazing content</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Content Section -->
+                    <div class="p-12">
+                        <div class="text-center mb-8">
+                            <span class="inline-block px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-semibold mb-4">
+                                Support My Work
+                            </span>
+                            <h3 class="text-3xl font-bold text-gray-900 mb-4">Buy Me a Coffee</h3>
+                            <p class="text-gray-600">
+                                If you appreciate my work or found value in my content, consider supporting my journey. 
+                                Your contribution helps me continue creating and sharing knowledge.
+                            </p>
+                        </div>
+                        
+                        <div class="space-y-4 mb-8">
+                            {% with coffee_options="1,3,5" %}
+                            {% for amount in coffee_options.split %}
+                            <button class="w-full group bg-amber-50 hover:bg-amber-100 border-2 border-amber-200 hover:border-amber-400 rounded-xl p-4 text-left transition-all duration-300 transform hover:scale-102 coffee-option" data-amount="{{ amount }}">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="font-semibold text-gray-900">
+                                            {% if amount == "1" %}Small Support{% endif %}
+                                            {% if amount == "3" %}Coffee & Snack{% endif %}
+                                            {% if amount == "5" %}Generous Boost{% endif %}
+                                        </div>
+                                        <div class="text-amber-600 font-bold text-lg">${{ amount }}</div>
+                                    </div>
+                                    <div class="text-2xl">
+                                        {% if amount == "1" %}☕{% endif %}
+                                        {% if amount == "3" %}☕🍪{% endif %}
+                                        {% if amount == "5" %}☕🎉{% endif %}
+                                    </div>
+                                </div>
+                            </button>
+                            {% endfor %}
+                            {% endwith %}
+                        </div>
+                        
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Custom Amount ($)</label>
+                                <input type="number" 
+                                       id="custom-amount"
+                                       placeholder="Enter amount" 
+                                       min="1"
+                                       step="0.01"
+                                       class="w-full border border-gray-300 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
+                            </div>
+                            
+                            <a href="{% url 'buy_coffee' %}" 
+                               id="coffee-link"
+                               class="w-full bg-green-600 hover:bg-green-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                                <i class="fas fa-heart mr-2"></i>
+                                Support with MPesa
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-gray-900">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <!-- Contact Info -->
+            <div>
+                <span class="inline-block px-4 py-2 bg-blue-500/20 text-blue-300 rounded-full text-sm font-semibold mb-4">
+                    Get In Touch
+                </span>
+                
+                <h2 class="text-4xl md:text-5xl font-bold text-white mb-6">
+                    Let's Work
+                    <span class="gradient-text">Together</span>
+                </h2>
+                
+                <p class="text-xl text-gray-300 mb-8 leading-relaxed">
+                    Ready to bring your next project to life? Let's discuss how we can create something amazing together.
+                </p>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-envelope text-blue-400"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-semibold">Email</div>
+                            <div class="text-gray-400">{{ site_settings.admin_email }}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-phone text-green-400"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-semibold">Phone</div>
+                            <div class="text-gray-400">+254 798 393 182</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-map-marker-alt text-purple-400"></i>
+                        </div>
+                        <div>
+                            <div class="text-white font-semibold">Location</div>
+                            <div class="text-gray-400">Nairobi, Kenya</div>
+                        </div>
+                    </div>
+
+                    <!-- Social Links -->
+                    <div class="flex space-x-4 pt-4">
+                        {% if site_settings.github_url %}
+                        <a href="{{ site_settings.github_url }}" target="_blank" rel="noopener noreferrer" 
+                           class="w-12 h-12 bg-gray-700 hover:bg-gray-600 rounded-xl flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-github text-white text-xl"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% if site_settings.linkedin_url %}
+                        <a href="{{ site_settings.linkedin_url }}" target="_blank" rel="noopener noreferrer"
+                           class="w-12 h-12 bg-gray-700 hover:bg-blue-600 rounded-xl flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-linkedin text-white text-xl"></i>
+                        </a>
+                        {% endif %}
+                        
+                        {% if site_settings.twitter_url %}
+                        <a href="{{ site_settings.twitter_url }}" target="_blank" rel="noopener noreferrer"
+                           class="w-12 h-12 bg-gray-700 hover:bg-blue-400 rounded-xl flex items-center justify-center transition-colors duration-300">
+                            <i class="fab fa-twitter text-white text-xl"></i>
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="bg-gray-800 rounded-2xl p-8 shadow-2xl">
+                <form class="space-y-6" method="POST" action="{% url 'contact' %}">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Your Name</label>
+                            <input type="text" 
+                                   name="name"
+                                   placeholder="John Doe" 
+                                   required
+                                   class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Your Email</label>
+                            <input type="email" 
+                                   name="email"
+                                   placeholder="john@example.com" 
+                                   required
+                                   class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Subject</label>
+                        <input type="text" 
+                               name="subject"
+                               placeholder="Project Discussion" 
+                               required
+                               class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Your Message</label>
+                        <textarea rows="5" 
+                                  name="message"
+                                  placeholder="Tell me about your project..." 
+                                  required
+                                  class="w-full bg-gray-700 border border-gray-600 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 resize-none"></textarea>
+                    </div>
+                    
+                    <button type="submit" 
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 px-6 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.querySelectorAll('.animate-fade-in-up').forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(30px)';
+        el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(el);
+    });
+
+    // Coffee purchase amount handling
+    document.querySelectorAll('.coffee-option').forEach(button => {
+        button.addEventListener('click', function() {
+            const amount = this.getAttribute('data-amount');
+            document.getElementById('custom-amount').value = amount;
+            
+            // Update all buttons
+            document.querySelectorAll('.coffee-option').forEach(btn => {
+                btn.classList.remove('border-amber-400', 'bg-amber-100');
+                btn.classList.add('border-amber-200', 'bg-amber-50');
+            });
+            
+            // Highlight selected
+            this.classList.remove('border-amber-200', 'bg-amber-50');
+            this.classList.add('border-amber-400', 'bg-amber-100');
+        });
+    });
+
+    // Custom amount input handling
+    document.getElementById('custom-amount').addEventListener('input', function() {
+        const amount = this.value;
+        if (amount) {
+            document.querySelectorAll('.coffee-option').forEach(btn => {
+                btn.classList.remove('border-amber-400', 'bg-amber-100');
+                btn.classList.add('border-amber-200', 'bg-amber-50');
+            });
+        }
+    });
+
+    // Update coffee link with amount
+    document.getElementById('coffee-link').addEventListener('click', function(e) {
+        const customAmount = document.getElementById('custom-amount').value;
+        if (customAmount) {
+            const url = new URL(this.href);
+            url.searchParams.set('amount', customAmount);
+            this.href = url.toString();
+        }
+    });
+
+    // Add loading state to forms
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function() {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+                submitBtn.disabled = true;
+            }
+        });
+    });
+
+    // Initialize tooltips for technology icons
+    document.querySelectorAll('.tech-icon').forEach(icon => {
+        icon.addEventListener('mouseenter', function() {
+            const techName = this.nextElementSibling.textContent;
+            this.setAttribute('title', techName);
+        });
+    });
+</script>
+{% endblock %}

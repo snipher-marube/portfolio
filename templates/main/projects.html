@@ -1,0 +1,491 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Projects - Marube {% endblock %}
+
+{% block meta_description %}Browse my portfolio of web development projects built with Python, Django, and modern technologies. See my work in full-stack development.{% endblock %}
+
+{% block content %}
+<style>
+    .project-card {
+        transition: all 0.3s ease;
+        background: linear-gradient(135deg, #fff 0%, #f8fafc 100%);
+    }
+
+    .project-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .filter-btn {
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .lazy-load {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .lazy-load.loaded {
+        opacity: 1;
+    }
+
+    .tech-tag {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.75rem;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .project-card,
+        .filter-btn {
+            transition: none;
+        }
+    }
+</style>
+
+<!-- Page Header -->
+<section class="relative py-16 bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+    <div class="container mx-auto px-4">
+        <div class="text-center text-white">
+            <nav class="flex justify-center mb-4" aria-label="Breadcrumb">
+                <ol class="flex items-center space-x-2 text-sm">
+                    <li>
+                        <a href="{% url 'home' %}" class="text-purple-200 hover:text-white transition-colors duration-300">Home</a>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-chevron-right text-purple-300 text-xs mx-2" aria-hidden="true"></i>
+                        <span class="text-white" aria-current="page">Projects</span>
+                    </li>
+                </ol>
+            </nav>
+            
+            <h1 class="text-4xl md:text-6xl font-bold mb-6" role="heading" aria-level="1">
+                My <span class="gradient-text">Projects</span>
+            </h1>
+            
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                A curated collection of my work in web development, showcasing solutions built with modern technologies and best practices.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- Filters Section -->
+<section class="py-8 bg-white border-b border-gray-200 sticky top-0 z-40 backdrop-blur-sm bg-white/95">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+            <!-- Search Box -->
+            <div class="w-full lg:w-auto">
+                <form method="get" class="relative max-w-md">
+                    <label for="search-input" class="sr-only">Search projects</label>
+                    <input 
+                        type="text" 
+                        id="search-input"
+                        name="q" 
+                        value="{{ request.GET.q }}"
+                        placeholder="Search projects..." 
+                        class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                        aria-describedby="search-help"
+                    >
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400" aria-hidden="true"></i>
+                    <div id="search-help" class="sr-only">Search by project title, description, or technology</div>
+                </form>
+            </div>
+
+            <!-- Filter Controls -->
+            <div class="flex flex-wrap gap-4 items-center">
+                <!-- Category Filter -->
+                <div class="relative" x-data="{ open: false }">
+                    <button 
+                        @click="open = !open"
+                        class="filter-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-controls="category-menu"
+                    >
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        Categories
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300" :class="{ 'rotate-180': open }" aria-hidden="true"></i>
+                    </button>
+                    
+                    <div 
+                        x-show="open" 
+                        @click.outside="open = false"
+                        id="category-menu"
+                        class="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
+                        role="menu"
+                        aria-label="Category filter menu"
+                    >
+                        <div class="p-4">
+                            <h3 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Filter by Category</h3>
+                            <div class="space-y-2">
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.technology %}technology={{ request.GET.technology }}&{% endif %}" 
+                                   class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 {% if not request.GET.category %}bg-blue-50 text-blue-700 font-medium{% endif %}"
+                                   role="menuitem">
+                                    All Categories
+                                </a>
+                                {% for category in categories %}
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.technology %}technology={{ request.GET.technology }}&{% endif %}category={{ category.slug }}" 
+                                   class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 {% if request.GET.category == category.slug %}bg-blue-50 text-blue-700 font-medium{% endif %}"
+                                   role="menuitem">
+                                    {{ category.name }}
+                                    <span class="text-xs text-gray-500 ml-1">({{ category.project_count }})</span>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Technology Filter -->
+                <div class="relative" x-data="{ open: false }">
+                    <button 
+                        @click="open = !open"
+                        class="filter-btn bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
+                        aria-haspopup="true"
+                        aria-expanded="false"
+                        aria-controls="tech-menu"
+                    >
+                        <i class="fas fa-code" aria-hidden="true"></i>
+                        Technologies
+                        <i class="fas fa-chevron-down text-xs transition-transform duration-300" :class="{ 'rotate-180': open }" aria-hidden="true"></i>
+                    </button>
+                    
+                    <div 
+                        x-show="open" 
+                        @click.outside="open = false"
+                        id="tech-menu"
+                        class="absolute top-full left-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-96 overflow-y-auto"
+                        role="menu"
+                        aria-label="Technology filter menu"
+                    >
+                        <div class="p-4">
+                            <h3 class="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Filter by Technology</h3>
+                            <div class="space-y-2">
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}" 
+                                   class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 {% if not request.GET.technology %}bg-blue-50 text-blue-700 font-medium{% endif %}"
+                                   role="menuitem">
+                                    All Technologies
+                                </a>
+                                {% for tech in technologies %}
+                                <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}{% if request.GET.category %}category={{ request.GET.category }}&{% endif %}technology={{ tech.slug }}" 
+                                   class="block px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors duration-200 {% if request.GET.technology == tech.slug %}bg-blue-50 text-blue-700 font-medium{% endif %}"
+                                   role="menuitem">
+                                    {{ tech.name }}
+                                    <span class="text-xs text-gray-500 ml-1">({{ tech.project_count }})</span>
+                                </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clear Filters -->
+                {% if request.GET.q or request.GET.category or request.GET.technology %}
+                <a href="{% url 'project_list' %}" 
+                   class="filter-btn bg-red-100 hover:bg-red-200 text-red-700 px-4 py-2 rounded-xl font-medium transition-all duration-300 flex items-center gap-2"
+                   aria-label="Clear all filters">
+                    <i class="fas fa-times" aria-hidden="true"></i>
+                    Clear
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Projects Grid -->
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <!-- Results Info -->
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900" id="projects-count">
+                    {{ projects.paginator.count }} Project{{ projects.paginator.count|pluralize }} Found
+                </h2>
+                {% if request.GET.q %}
+                <p class="text-gray-600 mt-1">Search results for "{{ request.GET.q }}"</p>
+                {% endif %}
+            </div>
+            
+            <!-- Sort Options -->
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-gray-600">Sort by:</span>
+                <select class="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        onchange="window.location.href = this.value"
+                        aria-label="Sort projects by">
+                    <option value="?sort=featured" {% if not request.GET.sort or request.GET.sort == 'featured' %}selected{% endif %}>Featured</option>
+                    <option value="?sort=latest" {% if request.GET.sort == 'latest' %}selected{% endif %}>Latest</option>
+                    <option value="?sort=name" {% if request.GET.sort == 'name' %}selected{% endif %}>Name</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Projects Grid -->
+        {% if projects %}
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" role="list" aria-labelledby="projects-count">
+            {% for project in projects %}
+            <article class="project-card bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden" role="listitem">
+                <!-- Project Image -->
+                <div class="relative overflow-hidden">
+                    {% if project.featured_image %}
+                    <img 
+                        src="{{ project.featured_image.url }}" 
+                        alt="{{ project.title }} - Project screenshot" 
+                        class="w-full h-48 object-cover lazy-load"
+                        loading="lazy"
+                        onload="this.classList.add('loaded')"
+                    >
+                    {% else %}
+                    <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
+                        <i class="fas fa-project-diagram text-6xl text-white opacity-90" aria-hidden="true"></i>
+                    </div>
+                    {% endif %}
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-4 right-4">
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold 
+                                    {% if project.status == 'completed' %}bg-green-100 text-green-800
+                                    {% elif project.status == 'in_progress' %}bg-yellow-100 text-yellow-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {{ project.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Project Content -->
+                <div class="p-6">
+                    <!-- Categories -->
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        {% for category in project.categories.all|slice:":2" %}
+                        <span class="tech-tag bg-blue-100 text-blue-700 rounded-full font-medium">
+                            {{ category.name }}
+                        </span>
+                        {% endfor %}
+                        {% if project.categories.count > 2 %}
+                        <span class="tech-tag bg-gray-100 text-gray-600 rounded-full">
+                            +{{ project.categories.count|add:"-2" }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Title -->
+                    <h3 class="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                        <a href="{{ project.get_absolute_url }}" class="hover:text-blue-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
+                            {{ project.title }}
+                        </a>
+                    </h3>
+
+                    <!-- Description -->
+                    <p class="text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+                        {{ project.short_description }}
+                    </p>
+
+                    <!-- Technologies -->
+                    <div class="flex flex-wrap gap-2 mb-6">
+                        {% for tech in project.technologies.all|slice:":3" %}
+                        <span class="tech-tag bg-gray-100 text-gray-700 rounded-full">
+                            {{ tech.name }}
+                        </span>
+                        {% endfor %}
+                        {% if project.technologies.count > 3 %}
+                        <span class="tech-tag bg-gray-100 text-gray-600 rounded-full">
+                            +{{ project.technologies.count|add:"-3" }}
+                        </span>
+                        {% endif %}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3">
+                        {% if project.project_url %}
+                        <a href="{{ project.project_url }}" 
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="flex-1 bg-blue-600 hover:bg-blue-700 text-white text-center py-2 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                           aria-label="View live demo of {{ project.title }}">
+                            <i class="fas fa-external-link-alt text-sm" aria-hidden="true"></i>
+                            Demo
+                        </a>
+                        {% endif %}
+                        
+                        {% if project.github_url %}
+                        <a href="{{ project.github_url }}" 
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="flex-1 border border-gray-300 hover:bg-gray-50 text-gray-700 text-center py-2 px-4 rounded-lg font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                           aria-label="View source code of {{ project.title }} on GitHub">
+                            <i class="fab fa-github" aria-hidden="true"></i>
+                            Code
+                        </a>
+                        {% endif %}
+
+                        {% if not project.project_url and not project.github_url %}
+                        <a href="{{ project.get_absolute_url }}" 
+                           class="flex-1 bg-gray-600 hover:bg-gray-700 text-white text-center py-2 px-4 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                           aria-label="View details of {{ project.title }}">
+                            <i class="fas fa-info-circle" aria-hidden="true"></i>
+                            Details
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        {% if projects.has_other_pages %}
+        <nav class="flex justify-center mt-16" aria-label="Project pagination">
+            <ul class="flex items-center space-x-2">
+                {% if projects.has_previous %}
+                <li>
+                    <a href="?page={{ projects.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-300"
+                       aria-label="Go to previous page">
+                        <i class="fas fa-chevron-left text-sm" aria-hidden="true"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in projects.paginator.page_range %}
+                    {% if projects.number == num %}
+                    <li>
+                        <span class="flex items-center justify-center w-10 h-10 bg-blue-600 text-white rounded-lg font-semibold" 
+                              aria-current="page" aria-label="Current page, page {{ num }}">
+                            {{ num }}
+                        </span>
+                    </li>
+                    {% elif num > projects.number|add:'-3' and num < projects.number|add:'3' %}
+                    <li>
+                        <a href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                           class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-300"
+                           aria-label="Go to page {{ num }}">
+                            {{ num }}
+                        </a>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if projects.has_next %}
+                <li>
+                    <a href="?page={{ projects.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}" 
+                       class="flex items-center justify-center w-10 h-10 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors duration-300"
+                       aria-label="Go to next page">
+                        <i class="fas fa-chevron-right text-sm" aria-hidden="true"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-16">
+            <div class="max-w-md mx-auto">
+                <i class="fas fa-search text-6xl text-gray-300 mb-6" aria-hidden="true"></i>
+                <h3 class="text-2xl font-bold text-gray-500 mb-4">No projects found</h3>
+                <p class="text-gray-500 mb-8">
+                    {% if request.GET.q or request.GET.category or request.GET.technology %}
+                    Try adjusting your search criteria or 
+                    <a href="{% url 'project_list' %}" class="text-blue-600 hover:text-blue-700 font-semibold transition-colors duration-300">
+                        clear all filters
+                    </a>.
+                    {% else %}
+                    Projects will be displayed here once they're added to the portfolio.
+                    {% endif %}
+                </p>
+                <a href="{% url 'home' %}" 
+                   class="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105">
+                    <i class="fas fa-home mr-2" aria-hidden="true"></i>
+                    Back to Home
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-br from-slate-900 to-purple-900">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+            Ready to Start Your Project?
+        </h2>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Let's work together to bring your ideas to life with modern, scalable solutions.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="#contact" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                Get In Touch
+            </a>
+            <a href="{% url 'home' %}" 
+               class="border border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                <i class="fas fa-user" aria-hidden="true"></i>
+                Learn More About Me
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Lazy loading enhancement
+    document.addEventListener('DOMContentLoaded', function() {
+        const lazyImages = document.querySelectorAll('.lazy-load');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        lazyImages.forEach(img => imageObserver.observe(img));
+
+        // Filter functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        filterButtons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                filterButtons.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+            });
+        });
+
+        // Search debouncing
+        let searchTimeout;
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    this.form.submit();
+                }, 500);
+            });
+        }
+    });
+
+    // Keyboard navigation for filters
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            // Close all dropdowns when escape is pressed
+            const dropdowns = document.querySelectorAll('[x-data]');
+            dropdowns.forEach(dropdown => {
+                dropdown.__x.$data.open = false;
+            });
+        }
+    });
+</script>
+{% endblock %}

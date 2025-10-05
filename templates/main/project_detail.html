@@ -1,0 +1,398 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ project.title }} - {{ site_settings.site_name }}{% endblock %}
+
+{% block meta_description %}{{ project.short_description }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .project-hero {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(76, 29, 149, 0.9) 100%);
+    }
+
+    .tech-stack-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 1rem;
+    }
+
+    .feature-list li {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .feature-list li:before {
+        content: '✓';
+        position: absolute;
+        left: 0;
+        color: #10b981;
+        font-weight: bold;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Breadcrumb -->
+<nav class="bg-gray-100 py-4 border-b border-gray-200" aria-label="Breadcrumb">
+    <div class="container mx-auto px-4">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li>
+                <a href="{% url 'home' %}" class="text-gray-500 hover:text-gray-700 transition-colors duration-300">Home</a>
+            </li>
+            <li class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 text-xs mx-2" aria-hidden="true"></i>
+                <a href="{% url 'project_list' %}" class="text-gray-500 hover:text-gray-700 transition-colors duration-300">Projects</a>
+            </li>
+            <li class="flex items-center">
+                <i class="fas fa-chevron-right text-gray-400 text-xs mx-2" aria-hidden="true"></i>
+                <span class="text-gray-900 font-medium truncate max-w-200" aria-current="page">{{ project.title }}</span>
+            </li>
+        </ol>
+    </div>
+</nav>
+
+<!-- Project Hero -->
+<section class="project-hero py-16 text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <!-- Status Badge -->
+            <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 border border-white/20">
+                <span class="w-2 h-2 rounded-full 
+                            {% if project.status == 'completed' %}bg-green-400
+                            {% elif project.status == 'in_progress' %}bg-yellow-400
+                            {% else %}bg-gray-400{% endif %}" 
+                      aria-hidden="true"></span>
+                <span class="text-sm font-medium">{{ project.get_status_display }}</span>
+            </div>
+
+            <h1 class="text-4xl md:text-6xl font-bold mb-6" role="heading" aria-level="1">
+                {{ project.title }}
+            </h1>
+
+            <p class="text-xl text-gray-300 mb-8 leading-relaxed max-w-2xl mx-auto">
+                {{ project.short_description }}
+            </p>
+
+            <!-- Project Metadata -->
+            <div class="flex flex-wrap justify-center gap-6 mb-8 text-sm">
+                {% if project.start_date %}
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-calendar text-blue-300" aria-hidden="true"></i>
+                    <span>{{ project.start_date|date:"M Y" }} - {% if project.end_date %}{{ project.end_date|date:"M Y" }}{% else %}Present{% endif %}</span>
+                </div>
+                {% endif %}
+
+                {% if project.project_type %}
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-code text-green-300" aria-hidden="true"></i>
+                    <span>{{ project.get_project_type_display }}</span>
+                </div>
+                {% endif %}
+
+                {% if project.client %}
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-user-tie text-purple-300" aria-hidden="true"></i>
+                    <span>Client: {{ project.client }}</span>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                {% if project.project_url %}
+                <a href="{{ project.project_url }}" 
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2"
+                   aria-label="Visit live demo of {{ project.title }}">
+                    <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                    View Live Demo
+                </a>
+                {% endif %}
+
+                {% if project.github_url %}
+                <a href="{{ project.github_url }}" 
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="border border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                   aria-label="View source code of {{ project.title }} on GitHub">
+                    <i class="fab fa-github" aria-hidden="true"></i>
+                    Source Code
+                </a>
+                {% endif %}
+
+                {% if project.documentation_url %}
+                <a href="{{ project.documentation_url }}" 
+                   target="_blank"
+                   rel="noopener noreferrer"
+                   class="border border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2"
+                   aria-label="View documentation for {{ project.title }}">
+                    <i class="fas fa-book" aria-hidden="true"></i>
+                    Documentation
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Project Content -->
+<section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <!-- Main Content -->
+            <div class="lg:col-span-2">
+                <!-- Project Description -->
+                <article class="prose prose-lg max-w-none">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-6" role="heading" aria-level="2">Project Overview</h2>
+                    <div class="text-gray-700 leading-relaxed space-y-6">
+                        {{ project.description|linebreaks }}
+                    </div>
+                </article>
+
+                <!-- Project Features -->
+                {% if project.features %}
+                <div class="mt-12">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-6" role="heading" aria-level="3">Key Features</h3>
+                    <ul class="feature-list space-y-3 text-gray-700">
+                        {% for feature in project.features %}
+                        <li>{{ feature }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                <!-- Technology Stack -->
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fas fa-layer-group text-blue-600" aria-hidden="true"></i>
+                        Technology Stack
+                    </h3>
+                    <div class="tech-stack-grid">
+                        {% for tech in project.technologies.all %}
+                        <div class="text-center group">
+                            <div class="w-12 h-12 bg-white rounded-xl flex items-center justify-center mx-auto mb-2 shadow-sm group-hover:shadow-md transition-shadow duration-300">
+                                {% if tech.icon %}
+                                    <i class="{{ tech.icon }} text-xl text-gray-600 group-hover:text-blue-600 transition-colors duration-300" aria-hidden="true"></i>
+                                {% else %}
+                                    <i class="fas fa-code text-xl text-gray-600 group-hover:text-blue-600 transition-colors duration-300" aria-hidden="true"></i>
+                                {% endif %}
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">{{ tech.name }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <!-- Project Categories -->
+                {% if project.categories.exists %}
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fas fa-folder text-green-600" aria-hidden="true"></i>
+                        Categories
+                    </h3>
+                    <div class="flex flex-wrap gap-2">
+                        {% for category in project.categories.all %}
+                        <span class="px-3 py-1 bg-white text-gray-700 rounded-full text-sm font-medium border border-gray-200">
+                            {{ category.name }}
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Project Info -->
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-purple-600" aria-hidden="true"></i>
+                        Project Details
+                    </h3>
+                    <dl class="space-y-3">
+                        {% if project.start_date %}
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Duration:</dt>
+                            <dd class="text-gray-900 font-medium">
+                                {{ project.start_date|date:"M Y" }} - {% if project.end_date %}{{ project.end_date|date:"M Y" }}{% else %}Present{% endif %}
+                            </dd>
+                        </div>
+                        {% endif %}
+
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Status:</dt>
+                            <dd class="text-gray-900 font-medium">{{ project.get_status_display }}</dd>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Type:</dt>
+                            <dd class="text-gray-900 font-medium">{{ project.get_project_type_display }}</dd>
+                        </div>
+
+                        {% if project.client %}
+                        <div class="flex justify-between">
+                            <dt class="text-gray-600">Client:</dt>
+                            <dd class="text-gray-900 font-medium">{{ project.client }}</dd>
+                        </div>
+                        {% endif %}
+                    </dl>
+                </div>
+
+                <!-- Share Project -->
+                <div class="bg-gray-50 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">Share Project</h3>
+                    <div class="flex space-x-3">
+                        <button onclick="shareOnTwitter()" 
+                                class="flex-1 bg-blue-400 hover:bg-blue-500 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center gap-2"
+                                aria-label="Share on Twitter">
+                            <i class="fab fa-twitter" aria-hidden="true"></i>
+                            Twitter
+                        </button>
+                        <button onclick="shareOnLinkedIn()" 
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-semibold transition-colors duration-300 flex items-center justify-center gap-2"
+                                aria-label="Share on LinkedIn">
+                            <i class="fab fa-linkedin" aria-hidden="true"></i>
+                            LinkedIn
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Related Projects -->
+{% if related_projects %}
+<section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+        <h2 class="text-3xl font-bold text-gray-900 mb-12 text-center" role="heading" aria-level="2">
+            Related Projects
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for related_project in related_projects %}
+            <article class="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden project-card">
+                {% if related_project.featured_image %}
+                <img 
+                    src="{{ related_project.featured_image.url }}" 
+                    alt="{{ related_project.title }}" 
+                    class="w-full h-48 object-cover lazy-load"
+                    loading="lazy"
+                >
+                {% else %}
+                <div class="w-full h-48 bg-gradient-to-br from-blue-400 to-purple-600 flex items-center justify-center">
+                    <i class="fas fa-project-diagram text-6xl text-white opacity-90" aria-hidden="true"></i>
+                </div>
+                {% endif %}
+                
+                <div class="p-6">
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">
+                        <a href="{{ related_project.get_absolute_url }}" class="hover:text-blue-600 transition-colors duration-300">
+                            {{ related_project.title }}
+                        </a>
+                    </h3>
+                    
+                    <p class="text-gray-600 mb-4 line-clamp-2">
+                        {{ related_project.short_description }}
+                    </p>
+                    
+                    <a href="{{ related_project.get_absolute_url }}" 
+                       class="text-blue-600 hover:text-blue-700 font-semibold text-sm flex items-center gap-1">
+                        View Project
+                        <i class="fas fa-arrow-right text-xs" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- CTA Section -->
+<section class="py-16 bg-gradient-to-br from-slate-900 to-purple-900 text-white">
+    <div class="container mx-auto px-4 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-6">Like What You See?</h2>
+        <p class="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
+            Let's discuss how we can bring your next project to life with similar quality and attention to detail.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'home' %}#contact" 
+               class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2">
+                <i class="fas fa-paper-plane" aria-hidden="true"></i>
+                Start a Project
+            </a>
+            <a href="{% url 'project_list' %}" 
+               class="border border-white/20 text-white hover:bg-white/10 px-8 py-4 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2">
+                <i class="fas fa-code" aria-hidden="true"></i>
+                View All Projects
+            </a>
+        </div>
+    </div>
+</section>
+
+<script>
+    // Social sharing functions
+    function shareOnTwitter() {
+        const text = "Check out this project: {{ project.title }}";
+        const url = window.location.href;
+        window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`, '_blank');
+    }
+
+    function shareOnLinkedIn() {
+        const url = window.location.href;
+        window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, '_blank');
+    }
+
+    // Lazy loading for images
+    document.addEventListener('DOMContentLoaded', function() {
+        const lazyImages = document.querySelectorAll('.lazy-load');
+        
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    img.src = img.dataset.src || img.src;
+                    img.classList.add('loaded');
+                    observer.unobserve(img);
+                }
+            });
+        });
+
+        lazyImages.forEach(img => imageObserver.observe(img));
+    });
+
+    // Add structured data for SEO
+    const structuredData = {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "{{ project.title }}",
+        "description": "{{ project.short_description }}",
+        "url": "{{ request.build_absolute_uri }}",
+        "author": {
+            "@type": "Person",
+            "name": "{{ site_settings.site_name }}"
+        },
+        "codeRepository": "{{ project.github_url }}",
+        "programmingLanguage": [
+            {% for tech in project.technologies.all %}"{{ tech.name }}"{% if not forloop.last %},{% endif %}{% endfor %}
+        ],
+        "dateCreated": "{{ project.created_at|date:'c' }}",
+        "dateModified": "{{ project.updated_at|date:'c' }}"
+    };
+
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify(structuredData);
+    document.head.appendChild(script);
+</script>
+{% endblock %}

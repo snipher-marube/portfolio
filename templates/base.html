@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Marube Snipher Abel | Full Stack Web Developer{% endblock %}</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="{% static 'css/output.css' %}" as="style">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    
+    <!-- Tailwind CSS -->
+    <link rel="stylesheet" href="{% static 'css/output.css' %}">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" referrerpolicy="no-referrer">
+    
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #1e40af;
+            --accent-color: #f59e0b;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+        }
+        
+        .nav-scroll {
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hover-lift {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+        
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="font-sans antialiased bg-white text-gray-900">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-gray-900/95 backdrop-blur-md border-b border-gray-800">
+        <div class="container mx-auto px-4 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo/Brand -->
+                <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
+                    <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-code text-white text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="text-xl font-bold text-white group-hover:text-blue-400 transition-colors duration-300">
+                            Marube<span class="gradient-text font-extrabold">.</span>
+                        </span>
+                    </div>
+                </a>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden lg:flex items-center space-x-1">
+                    <a href="{% url 'home' %}#about" 
+                       class="nav-link px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-user w-4"></i>
+                        <span>About</span>
+                    </a>
+                    <a href="{% url 'home' %}#skills" 
+                       class="nav-link px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-cog w-4"></i>
+                        <span>Skills</span>
+                    </a>
+                    <a href="{% url 'home' %}#projects" 
+                       class="nav-link px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-project-diagram w-4"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="{% url 'blog_list' %}" 
+                       class="nav-link px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-blog w-4"></i>
+                        <span>Blog</span>
+                    </a>
+                    <a href="{% url 'home' %}#contact" 
+                       class="nav-link px-4 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-2">
+                        <i class="fas fa-envelope w-4"></i>
+                        <span>Contact</span>
+                    </a>
+                    
+                    <!-- Call to Action -->
+                    <a href="{% url 'buy_coffee' %}" 
+                       class="ml-4 px-6 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-amber-500/25 flex items-center space-x-2">
+                        <i class="fas fa-mug-hot"></i>
+                        <span>Buy Coffee</span>
+                    </a>
+                </div>
+
+                <!-- Mobile menu button -->
+                <button class="lg:hidden p-2 rounded-xl hover:bg-white/5 transition-colors duration-300" 
+                        id="mobile-menu-button" 
+                        aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars text-xl text-white"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile menu -->
+            <div class="lg:hidden hidden border-t border-gray-800" id="mobile-menu">
+                <div class="py-4 space-y-2">
+                    <a href="{% url 'home' %}#about" 
+                       class="mobile-nav-link block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-user w-5"></i>
+                        <span>About Me</span>
+                    </a>
+                    <a href="{% url 'home' %}#skills" 
+                       class="mobile-nav-link block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-cog w-5"></i>
+                        <span>Skills</span>
+                    </a>
+                    <a href="{% url 'home' %}#projects" 
+                       class="mobile-nav-link block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-project-diagram w-5"></i>
+                        <span>Projects</span>
+                    </a>
+                    <a href="{% url 'blog_list' %}" 
+                       class="mobile-nav-link block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-blog w-5"></i>
+                        <span>Blog</span>
+                    </a>
+                    <a href="{% url 'home' %}#contact" 
+                       class="mobile-nav-link block px-4 py-3 text-gray-300 hover:text-white hover:bg-white/5 rounded-xl transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-envelope w-5"></i>
+                        <span>Contact</span>
+                    </a>
+                    
+                    <!-- Mobile CTA -->
+                    <div class="pt-2 border-t border-gray-800 mt-2">
+                        <a href="{% url 'buy_coffee' %}" 
+                           class="block px-4 py-3 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl font-semibold transition-all duration-300 text-center">
+                            <i class="fas fa-mug-hot mr-2"></i>
+                            Buy Me a Coffee
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
+        <!-- Background decoration -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-10 left-10 w-32 h-32 bg-blue-500 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-10 right-10 w-40 h-40 bg-purple-500 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div class="relative z-10">
+            <!-- Main Footer Content -->
+            <div class="container mx-auto px-4 lg:px-8 py-16">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-12">
+                    <!-- Brand Column -->
+                    <div class="lg:col-span-2">
+                        <div class="flex items-center space-x-3 mb-6">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <i class="fas fa-code text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold">Marube Snipher Abel</h3>
+                                <p class="text-blue-300 font-semibold">Full Stack Developer</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-6 max-w-md leading-relaxed">
+                            Crafting digital experiences with modern technologies. 
+                            Specializing in Python, Django, and full-stack web development 
+                            to bring your ideas to life.
+                        </p>
+                        
+                        <!-- Newsletter Signup -->
+                        <div class="bg-white/5 rounded-2xl p-6 backdrop-blur-sm border border-white/10">
+                            <h4 class="font-semibold mb-3 text-white">Stay Updated</h4>
+                            <p class="text-gray-300 text-sm mb-4">Get notified about new projects and articles.</p>
+                            <form class="flex space-x-2">
+                                <input type="email" 
+                                       placeholder="Enter your email" 
+                                       class="flex-1 bg-white/10 border border-white/20 rounded-xl px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <button type="submit" 
+                                        class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold transition-colors duration-300">
+                                    Subscribe
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Links -->
+                    <div>
+                        <h4 class="text-lg font-semibold mb-6 text-white">Quick Links</h4>
+                        <div class="space-y-3">
+                            <a href="{% url 'home' %}#about" 
+                               class="block text-gray-300 hover:text-white transition-colors duration-300 hover-lift flex items-center space-x-2">
+                                <i class="fas fa-chevron-right text-blue-400 text-xs"></i>
+                                <span>About Me</span>
+                            </a>
+                            <a href="{% url 'home' %}#skills" 
+                               class="block text-gray-300 hover:text-white transition-colors duration-300 hover-lift flex items-center space-x-2">
+                                <i class="fas fa-chevron-right text-blue-400 text-xs"></i>
+                                <span>Skills</span>
+                            </a>
+                            <a href="{% url 'home' %}#projects" 
+                               class="block text-gray-300 hover:text-white transition-colors duration-300 hover-lift flex items-center space-x-2">
+                                <i class="fas fa-chevron-right text-blue-400 text-xs"></i>
+                                <span>Projects</span>
+                            </a>
+                            <a href="{% url 'blog_list' %}" 
+                               class="block text-gray-300 hover:text-white transition-colors duration-300 hover-lift flex items-center space-x-2">
+                                <i class="fas fa-chevron-right text-blue-400 text-xs"></i>
+                                <span>Blog</span>
+                            </a>
+                            <a href="{% url 'buy_coffee' %}" 
+                               class="block text-amber-300 hover:text-amber-200 transition-colors duration-300 hover-lift flex items-center space-x-2">
+                                <i class="fas fa-chevron-right text-amber-400 text-xs"></i>
+                                <span>Buy Coffee</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Contact & Social -->
+                    <div>
+                        <h4 class="text-lg font-semibold mb-6 text-white">Connect</h4>
+                        <div class="space-y-4">
+                            <!-- Contact Info -->
+                            <div class="space-y-3">
+                                <div class="flex items-center space-x-3 text-gray-300">
+                                    <i class="fas fa-envelope text-blue-400 w-5"></i>
+                                    <span class="text-sm">sniphermarube@gmail.com</span>
+                                </div>
+                                <div class="flex items-center space-x-3 text-gray-300">
+                                    <i class="fas fa-phone text-green-400 w-5"></i>
+                                    <span class="text-sm">+254 798 393 182</span>
+                                </div>
+                                <div class="flex items-center space-x-3 text-gray-300">
+                                    <i class="fas fa-map-marker-alt text-purple-400 w-5"></i>
+                                    <span class="text-sm">Nairobi, Kenya</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Social Links -->
+                            <div class="pt-4">
+                                <div class="flex space-x-4">
+                                    <a href="https://github.com" 
+                                       class="w-10 h-10 bg-white/10 hover:bg-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 hover-lift group"
+                                       aria-label="GitHub">
+                                        <i class="fab fa-github text-gray-300 group-hover:text-white"></i>
+                                    </a>
+                                    <a href="https://linkedin.com" 
+                                       class="w-10 h-10 bg-white/10 hover:bg-blue-600 rounded-xl flex items-center justify-center transition-all duration-300 hover-lift group"
+                                       aria-label="LinkedIn">
+                                        <i class="fab fa-linkedin-in text-gray-300 group-hover:text-white"></i>
+                                    </a>
+                                    <a href="https://twitter.com" 
+                                       class="w-10 h-10 bg-white/10 hover:bg-blue-400 rounded-xl flex items-center justify-center transition-all duration-300 hover-lift group"
+                                       aria-label="Twitter">
+                                        <i class="fab fa-twitter text-gray-300 group-hover:text-white"></i>
+                                    </a>
+                                    <a href="https://dev.to" 
+                                       class="w-10 h-10 bg-white/10 hover:bg-gray-700 rounded-xl flex items-center justify-center transition-all duration-300 hover-lift group"
+                                       aria-label="Dev.to">
+                                        <i class="fab fa-dev text-gray-300 group-hover:text-white"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bottom Bar -->
+            <div class="border-t border-gray-800">
+                <div class="container mx-auto px-4 lg:px-8 py-6">
+                    <div class="flex flex-col lg:flex-row justify-between items-center space-y-4 lg:space-y-0">
+                        <div class="text-gray-400 text-sm">
+                            &copy; 2025 Marube Snipher Abel. All rights reserved.
+                        </div>
+                        
+                        <div class="flex items-center space-x-6 text-sm text-gray-400">
+                            <a href="#" class="hover:text-white transition-colors duration-300">Privacy Policy</a>
+                            <a href="#" class="hover:text-white transition-colors duration-300">Terms of Service</a>
+                            <a href="#" class="hover:text-white transition-colors duration-300">Sitemap</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            
+            // Update icon
+            const icon = this.querySelector('i');
+            if (menu.classList.contains('hidden')) {
+                icon.className = 'fas fa-bars text-xl text-white';
+            } else {
+                icon.className = 'fas fa-times text-xl text-white';
+            }
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-scroll');
+            } else {
+                navbar.classList.remove('nav-scroll');
+            }
+        });
+
+        // Smooth scrolling with offset for fixed header
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    const headerOffset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+
+                    // Close mobile menu if open
+                    const mobileMenu = document.getElementById('mobile-menu');
+                    const mobileButton = document.getElementById('mobile-menu-button');
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                        mobileButton.querySelector('i').className = 'fas fa-bars text-xl text-white';
+                    }
+                }
+            });
+        });
+
+        // Add active state to navigation links
+        function setActiveNavLink() {
+            const sections = document.querySelectorAll('section[id]');
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+            
+            let currentSection = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                const sectionHeight = section.clientHeight;
+                if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+                    currentSection = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('text-white', 'bg-white/10');
+                if (link.getAttribute('href').includes(currentSection)) {
+                    link.classList.add('text-white', 'bg-white/10');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', setActiveNavLink);
+        window.addEventListener('load', setActiveNavLink);
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
