@@ -25,7 +25,11 @@ SECRET_KEY = 'django-insecure-v@!2!hv_j9o8hiosua!bb)-9ah5(%-wwms$ix1w8iq%1b)l@+7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
+
+CSRF_TRUSTED_ORIGINS = ['https://e801e135d399.ngrok-free.app']
+TRUSTED_HOSTS = ['*']  # For development purposes, allow all hosts
+
 
 
 # Application definition
@@ -37,8 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'ckeditor', 
-    'ckeditor_uploader', 
+    'tinymce',
     'main',
 ]
 
@@ -139,42 +142,76 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB
 
 
-# CKEditor Configuration
-CKEDITOR_UPLOAD_PATH = "uploads/"
-CKEDITOR_IMAGE_BACKEND = "pillow"
-CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
-CKEDITOR_CONFIGS = {
-    'default': {
-        'toolbar': 'full',
-        'height': 400,
-        'width': '100%',
-        'extraPlugins': 'codesnippet,prism',
-        'codeSnippet_theme': 'monokai_sublime',
-        'removePlugins': 'stylesheetparser',
-        'allowedContent': True,
-        'toolbar_Custom': [
-            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
-            ['NumberedList', 'BulletedList', 'Outdent', 'Indent'],
-            ['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
-            ['Link', 'Unlink', 'Anchor'],
-            ['Image', 'Flash', 'Table', 'HorizontalRule', 'Smiley', 'SpecialChar'],
-            ['Format', 'Font', 'FontSize'],
-            ['TextColor', 'BGColor'],
-            ['Maximize', 'ShowBlocks'],
-            ['CodeSnippet', 'Source'],
-        ],
-        'toolbar': 'Custom',
-    },
-    'advanced': {
-        'toolbar': 'full',
-        'height': 400,
-        'width': '100%',
-        'extraPlugins': 'codesnippet,prism,widget,lineutils,dialog,codesnippetgeshi',
-        'codeSnippet_theme': 'monokai_sublime',
-        'removePlugins': 'stylesheetparser',
-        'allowedContent': True,
-    }
+# settings.py
+TINYMCE_DEFAULT_CONFIG = {
+    'height': 600,
+    'width': '100%',
+    'menubar': 'file edit view insert format tools table help',
+    'plugins': '''
+        advlist autolink lists link image charmap print preview anchor
+        searchreplace visualblocks code codesample fullscreen
+        insertdatetime media table paste code help wordcount
+        emoticons
+    ''',
+    'toolbar': '''
+        undo redo | formatselect | bold italic underline forecolor backcolor |
+        alignleft aligncenter alignright alignjustify |
+        bullist numlist outdent indent | link image media |
+        codesample code | table | emoticons | fullscreen preview
+    ''',
+    'toolbar_mode': 'floating',
+    'codesample_languages': [
+        {'text': 'Python', 'value': 'python'},
+        {'text': 'JavaScript', 'value': 'javascript'},
+        {'text': 'HTML/XML', 'value': 'markup'},
+        {'text': 'CSS', 'value': 'css'},
+        {'text': 'Django Template', 'value': 'django'},
+        {'text': 'SQL', 'value': 'sql'},
+        {'text': 'Bash/Shell', 'value': 'bash'},
+        {'text': 'JSON', 'value': 'json'},
+        {'text': 'YAML', 'value': 'yaml'},
+        {'text': 'Git', 'value': 'git'},
+        {'text': 'Docker', 'value': 'docker'},
+        {'text': 'Nginx', 'value': 'nginx'},
+        {'text': 'Markdown', 'value': 'markdown'},
+        {'text': 'Plain Text', 'value': 'text'},
+    ],
+    'codesample_dialog_width': 600,
+    'codesample_dialog_height': 400,
+    'content_style': '''
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            font-size: 14px; 
+            line-height: 1.6;
+        }
+        pre {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            overflow-x: auto;
+            position: relative;
+            margin: 1.5rem 0;
+        }
+        code {
+            background: #f1f3f4;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            color: #d73a49;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9em;
+        }
+        pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+            border-radius: 0;
+        }
+    ''',
+    'paste_data_images': True,
+    'image_advtab': True,
+    'link_list': [
+        {'title': 'Home', 'value': '/'},
+        {'title': 'Blog', 'value': '/blog/'},
+    ],
 }
-
-# Add to your existing settings
-CKEDITOR_BASEPATH = "/static/ckeditor/ckeditor/"

@@ -6,8 +6,7 @@ from django.urls import reverse
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from ckeditor.fields import RichTextField
-from ckeditor_uploader.fields import RichTextUploadingField
+from tinymce.models import HTMLField
 
 class TimeStampedModel(models.Model):
     """Abstract base model for created/updated timestamps"""
@@ -254,7 +253,7 @@ class BlogPost(TimeStampedModel):
         unique=True,
         help_text=_("URL-friendly version of the title")
     )
-    content = RichTextUploadingField(
+    content = HTMLField(
         help_text=_("Main content of the blog post")
     )
     excerpt = models.TextField(

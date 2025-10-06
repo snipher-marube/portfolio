@@ -277,7 +277,7 @@
 
             <!-- Article Body -->
             <article class="article-content bg-white rounded-2xl shadow-lg border border-gray-200 p-8 md:p-12">
-                {{ post.content|linebreaks }}
+                {{ post.content|safe }}
             </article>
 
             <!-- Share Section -->
@@ -413,6 +413,22 @@
         </div>
     </div>
 </section>
+
+<!-- Prism.js for syntax highlighting -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+
+<!-- Custom copy functionality -->
+<script src="{% static 'js/code-copy.js' %}"></script>
+
+<script>
+// Initialize Prism.js after content is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    Prism.plugins.autoloader.languages_path = 'https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/';
+    Prism.highlightAll();
+});
+</script>
 
 <script>
     // Generate Table of Contents

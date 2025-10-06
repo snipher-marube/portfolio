@@ -1,0 +1,204 @@
+/* static/css/code-highlight.css */
+/* VS Code Light Theme - Professional Style */
+.code-container {
+    position: relative;
+    margin: 2rem 0;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    background: white;
+    border: 1px solid #e1e5e9;
+}
+
+.code-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-bottom: 1px solid #e1e5e9;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #495057;
+}
+
+.code-language {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.language-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #4F46E5;
+}
+
+.copy-btn {
+    background: #4F46E5;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.copy-btn:hover {
+    background: #4338CA;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(79, 70, 229, 0.3);
+}
+
+.copy-btn:active {
+    transform: translateY(0);
+}
+
+.copy-btn.copied {
+    background: #10B981;
+}
+
+.copy-btn.copied::after {
+    content: "✓ Copied!";
+}
+
+pre.code-block {
+    margin: 0;
+    padding: 1.5rem;
+    overflow-x: auto;
+    background: #ffffff;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: #24292e;
+}
+
+/* VS Code Light Theme Colors */
+pre.code-block .token.comment,
+pre.code-block .token.prolog,
+pre.code-block .token.doctype,
+pre.code-block .token.cdata {
+    color: #6a737d;
+    font-style: italic;
+}
+
+pre.code-block .token.namespace {
+    opacity: 0.7;
+}
+
+pre.code-block .token.string,
+pre.code-block .token.attr-value {
+    color: #032f62;
+}
+
+pre.code-block .token.punctuation,
+pre.code-block .token.operator {
+    color: #24292e;
+}
+
+pre.code-block .token.entity,
+pre.code-block .token.url,
+pre.code-block .token.symbol,
+pre.code-block .token.number,
+pre.code-block .token.boolean,
+pre.code-block .token.variable,
+pre.code-block .token.constant,
+pre.code-block .token.property,
+pre.code-block .token.regex,
+pre.code-block .token.inserted {
+    color: #005cc5;
+}
+
+pre.code-block .token.atrule,
+pre.code-block .token.keyword,
+pre.code-block .token.attr-name,
+pre.code-block .language-autohotkey .token.selector {
+    color: #d73a49;
+}
+
+pre.code-block .token.function,
+pre.code-block .token.deleted,
+pre.code-block .language-autohotkey .token.tag {
+    color: #6f42c1;
+}
+
+pre.code-block .token.tag,
+pre.code-block .token.selector,
+pre.code-block .language-autohotkey .token.keyword {
+    color: #22863a;
+}
+
+pre.code-block .token.important,
+pre.code-block .token.function,
+pre.code-block .token.bold {
+    font-weight: bold;
+}
+
+pre.code-block .token.italic {
+    font-style: italic;
+}
+
+/* Line numbers */
+pre.code-block.line-numbers {
+    position: relative;
+    padding-left: 3.8em;
+    counter-reset: linenumber;
+}
+
+pre.code-block.line-numbers > code {
+    position: relative;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: -3.8em;
+    width: 3em;
+    letter-spacing: -1px;
+    border-right: 1px solid #e1e5e9;
+    user-select: none;
+    background: #f8f9fa;
+    padding: 1.5rem 0;
+}
+
+.line-numbers-rows > span {
+    pointer-events: none;
+    display: block;
+    counter-increment: linenumber;
+    padding-right: 0.8em;
+    text-align: right;
+}
+
+.line-numbers-rows > span:before {
+    content: counter(linenumber);
+    color: #6a737d;
+    display: block;
+}
+
+/* Scrollbar styling */
+pre.code-block::-webkit-scrollbar {
+    height: 8px;
+}
+
+pre.code-block::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+pre.code-block::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+}
+
+pre.code-block::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
