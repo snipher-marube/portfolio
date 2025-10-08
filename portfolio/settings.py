@@ -84,7 +84,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': '172.18.0.2',  # Use the service name from docker-compose
+        'HOST': '172.18.0.2',  # Use the actual container IP
         'PORT': 5432,
     }
 }
