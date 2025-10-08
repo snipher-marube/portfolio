@@ -10,12 +10,15 @@ services:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  web:
+  app:
     build: .
-    command: python manage.py runserver 0.0.0.0:8000
+    image: my-portfolio-image
+    container_name: my-portfolio-container
+    command: /app/entrypoint.sh
     volumes:
       - .:/app
     ports:
@@ -24,6 +27,47 @@ services:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
     depends_on:
       - postgres
+      - redis
+  
+  redis:
+    image: "redis:alpine"
+    container_name: my-redis-container
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+
+  celery:
+    image: my-portfolio-image
+    container_name: my-celery-container
+    command: celery -A portfolio worker -E -l info
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+      - app
+
+  flower:
+    image: my-portfolio-image
+    container_name: my-flower-container
+    command: celery -A portfolio flower --basic_auth=admin:snipher8431
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+  
+  beat:
+    image: my-portfolio-image
+    container_name: my-beat-container
+    command: celery -A portfolio beat -l INFO scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - app
 
 volumes:
   postgres_data:
+  redis_data:

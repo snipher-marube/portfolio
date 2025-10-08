@@ -41,7 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django_celery_results',
+    'django_celery_beat',
+    'sorl.thumbnail',
     'tinymce',
+    'newsletter',
     'main',
 ]
 
@@ -219,3 +224,10 @@ TINYMCE_DEFAULT_CONFIG = {
         {'title': 'Blog', 'value': '/blog/'},
     ],
 }
+
+# Using sorl-thumbnail
+NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
+
+CELERY_BROKER_URL = 'redis//:redis:6379/0'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_RESULT_EXTENDED = True
