@@ -2,10 +2,10 @@ name: 'portfolio-project'
 
 services:
   postgres:
-    image: postgres
+    image: postgres:18
     container_name: my-postgres-container
     ports:
-      - "5432:5432"
+      - "5433:5432"
     environment:
       POSTGRES_DB: postgres
       POSTGRES_USER: postgres
@@ -13,6 +13,25 @@ services:
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: "redis:8-alpine"
+    container_name: my-redis-container
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   app:
     build: .
@@ -26,17 +45,16 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
     depends_on:
-      - postgres
-      - redis
-  
-  redis:
-    image: "redis:alpine"
-    container_name: my-redis-container
-    restart: unless-stopped
-    ports:
-      - "6380:6379"
-    volumes:
-      - redis_data:/data
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python", "-c", "import socket; s = socket.socket(); s.connect(('localhost', 8000)); s.close()"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   celery:
     image: my-portfolio-image
@@ -45,9 +63,11 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - postgres
-      - redis
-      - app
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: on-failure
 
   flower:
     image: my-portfolio-image
@@ -56,17 +76,24 @@ services:
     ports:
       - "5555:5555"
     depends_on:
-      - redis
-  
+      redis:
+        condition: service_healthy
+      celery:
+        condition: service_started
+    restart: on-failure
+
   beat:
     image: my-portfolio-image
     container_name: my-beat-container
-    command: celery -A portfolio beat -l INFO scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command: celery -A portfolio beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - .:/app
     depends_on:
-      - redis
-      - app
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    restart: on-failure
 
 volumes:
   postgres_data:

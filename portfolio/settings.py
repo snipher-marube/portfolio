@@ -89,7 +89,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': '172.18.0.2',  # Use the actual container IP
+        'HOST': 'postgres',  # Use the actual container IP
         'PORT': 5432,
     }
 }
@@ -228,6 +228,8 @@ TINYMCE_DEFAULT_CONFIG = {
 # Using sorl-thumbnail
 NEWSLETTER_THUMBNAIL = 'sorl-thumbnail'
 
-CELERY_BROKER_URL = 'redis//:redis:6379/0'
+CELERY_BROKER_URL = 'redis://redis:6379/0'  # Added missing colon
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_RESULT_EXTENDED = True
+
+NEWSLETTER_USE_HTTPS = True
